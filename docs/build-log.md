@@ -45,3 +45,25 @@
 
 **Out-of-spec items flagged (waiting developer input):**
 - None.
+
+---
+
+## Session — 2026-04-07 (Re-open: Agent 5 review fixes)
+
+**Branch:** feature/agent4-circle-of-fifths
+**Stories addressed this session:** N/A — bug fixes from Agent 5 review
+
+**What was built:**
+- Fixed Critical: `QuizWrapper` in `App.jsx` — moved `onComplete()` call from render body into `useEffect(() => {...}, [quiz.isComplete])` to comply with React's no-side-effects-during-render rule
+- Fixed Minor: exported `QUESTIONS_PER_SESSION` from `quizEngine.js`; `QuizScreen.jsx` now imports it instead of redeclaring `TOTAL_QUESTIONS = 20`
+- Fixed Minor: removed unused `onChooseTopic` prop from `QuizWrapper` signature
+- Fixed Minor: removed redundant `!isAnswered` guard in `QuizOptions.jsx` onClick — `disabled` prop is sufficient
+
+**Commits this session:**
+- `04ce070` fix: move quiz completion callback into useEffect, remove duplicate constant and dead prop
+
+**Open questions / blockers:**
+- None.
+
+**Decisions made within approved spec:**
+- All changes are direct responses to Agent 5 findings. No scope changes.
