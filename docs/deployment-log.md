@@ -29,9 +29,8 @@
 - Sentry SDK added (commit 76a1d11) — active once VITE_SENTRY_DSN is set in Vercel environment variables
 
 ### Monitoring
-- Sentry: ⏳ Pending — SDK installed, awaiting developer to create project and add VITE_SENTRY_DSN to Vercel
-- UptimeRobot: ⏳ Pending — awaiting developer to create monitor
+- Sentry: ⏳ Deferred — SDK installed and ready. When needed: create Sentry project, add VITE_SENTRY_DSN to Vercel environment variables, redeploy.
+- UptimeRobot: ✅ Active — monitor ID: 802789099 | URL: https://music-theory-trainer-nu.vercel.app/ | interval: 5 minutes
 
 ### Open Items
-- Developer to complete Sentry project setup (see instructions in deployment log)
-- Developer to complete UptimeRobot monitor setup (see instructions in deployment log)
+- Sentry deferred by developer. SDK is in place — activation requires VITE_SENTRY_DSN in Vercel env vars.

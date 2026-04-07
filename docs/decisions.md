@@ -5,7 +5,7 @@
 ## 2026-04-07 Agent 7 Deployment Complete
 Production URL: https://music-theory-trainer-nu.vercel.app/
 Smoke test: PASS (clean in incognito window)
-Monitoring active: Sentry SDK installed (DSN pending), UptimeRobot pending
+Monitoring active: UptimeRobot monitor 802789099. Sentry SDK installed, activation deferred.
 
 ## 2026-04-07 Agent 6 Gate PASS
 QA report: docs/qa-reports/qa-2026-04-07.md
