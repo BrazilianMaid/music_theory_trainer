@@ -67,3 +67,24 @@
 
 **Decisions made within approved spec:**
 - All changes are direct responses to Agent 5 findings. No scope changes.
+
+---
+
+## Session — 2026-04-07 (Re-open: Agent 6 QA fix)
+
+**Branch:** feature/agent4-circle-of-fifths
+**Stories addressed this session:** N/A — edge case fix from Agent 6 QA report
+
+**What was built:**
+- Added empty session guard in `QuizWrapper` (`src/App.jsx`): if `buildSession` returns `[]`, renders "No questions available for this topic yet." with a "Back to Topics" button instead of crashing
+- Threaded `onGoBack` prop (→ `handleChooseTopic`) from `App` into `QuizWrapper` for use in the fallback only
+- Removed the stale `onChooseTopic` prop name in JSX — replaced with `onGoBack`
+
+**Commits this session:**
+- `f3e474f` fix: add empty session guard in QuizWrapper per ui-design.md edge case spec
+
+**Open questions / blockers:**
+- None.
+
+**Decisions made within approved spec:**
+- `onGoBack` used as prop name rather than reusing `onChooseTopic` — makes the intent clear (this prop exists only for the fallback state, not the normal quiz-complete flow).
