@@ -1,4 +1,4 @@
-const QUESTIONS_PER_SESSION = 20
+export const QUESTIONS_PER_SESSION = 20
 
 // Returns a shuffled array of `count` questions for the given topic,
 // with options shuffled so the correct answer isn't always in the same position.

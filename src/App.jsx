@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from './components/layout/Layout'
 import Header from './components/layout/Header'
 import LearningPath from './components/LearningPath'
@@ -16,15 +16,18 @@ const VIEW = {
   SUMMARY: 'summary',
 }
 
-function QuizWrapper({ topic, onComplete, onChooseTopic }) {
+function QuizWrapper({ topic, onComplete }) {
   const [sessionQuestions] = useState(() => buildSession(questions, topic.id))
   const quiz = useQuiz(sessionQuestions)
 
-  // When quiz completes, transition to summary
-  if (quiz.isComplete) {
-    const score = computeScore(sessionQuestions, quiz.answers)
-    onComplete(score, sessionQuestions, topic)
-  }
+  // Transition to summary after the last answer is confirmed.
+  // Must be in useEffect — calling parent state setters during render is a React anti-pattern.
+  useEffect(() => {
+    if (quiz.isComplete) {
+      const score = computeScore(sessionQuestions, quiz.answers)
+      onComplete(score, sessionQuestions, topic)
+    }
+  }, [quiz.isComplete])
 
   return <QuizScreen quiz={quiz} />
 }

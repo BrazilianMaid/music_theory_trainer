@@ -3,8 +3,7 @@ import QuizProgress from './QuizProgress'
 import QuizCard from './QuizCard'
 import QuizOptions from './QuizOptions'
 import QuizFeedback from './QuizFeedback'
-
-const TOTAL_QUESTIONS = 20
+import { QUESTIONS_PER_SESSION } from '../../utils/quizEngine'
 
 export default function QuizScreen({ quiz }) {
   const {
@@ -34,7 +33,7 @@ export default function QuizScreen({ quiz }) {
         <div className="lg:w-3/5">
           <QuizProgress
             current={currentIndex + 1}
-            total={TOTAL_QUESTIONS}
+            total={QUESTIONS_PER_SESSION}
           />
 
           <QuizCard question={currentQuestion.question} />

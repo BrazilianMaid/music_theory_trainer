@@ -21,7 +21,7 @@ export default function QuizOptions({ options, onSelect, getAnswerState, isAnswe
         return (
           <button
             key={option}
-            onClick={() => !isAnswered && onSelect(option)}
+            onClick={() => onSelect(option)}
             disabled={isAnswered}
             className={`w-full text-left px-4 py-3 rounded-xl border-2 font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-1 ${STATE_STYLES[state]}`}
           >
