@@ -16,9 +16,25 @@ const VIEW = {
   SUMMARY: 'summary',
 }
 
-function QuizWrapper({ topic, onComplete }) {
+function QuizWrapper({ topic, onComplete, onGoBack }) {
   const [sessionQuestions] = useState(() => buildSession(questions, topic.id))
   const quiz = useQuiz(sessionQuestions)
+
+  // Defensive: no questions available for this topic — show fallback instead of crashing.
+  // Per ui-design.md edge case spec.
+  if (sessionQuestions.length === 0) {
+    return (
+      <div className="text-center py-16 px-4">
+        <p className="text-gray-600 mb-4">No questions available for this topic yet.</p>
+        <button
+          onClick={onGoBack}
+          className="px-6 py-3 bg-white text-violet-700 font-semibold rounded-xl border-2 border-violet-600 hover:bg-violet-50 transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+        >
+          Back to Topics
+        </button>
+      </div>
+    )
+  }
 
   // Transition to summary after the last answer is confirmed.
   // Must be in useEffect — calling parent state setters during render is a React anti-pattern.
@@ -74,7 +90,7 @@ export default function App() {
           key={quizKey}
           topic={selectedTopic}
           onComplete={handleQuizComplete}
-          onChooseTopic={handleChooseTopic}
+          onGoBack={handleChooseTopic}
         />
       )}
 
