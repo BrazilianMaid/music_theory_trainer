@@ -1,103 +1,39 @@
-# Project Pipeline — Claude Code Orchestration File
+# CLAUDE.md — Music Theory Trainer
 
-This file is the persistent rulebook for all agent activity in this repository.
-Every Claude Code session reads this file first. No agent operates outside these rules.
+## What This App Does
+Next.js app (deployed on Vercel) that teaches the Circle of Fifths via 4 sequential 20-question quizzes. Users progress through a learning path and build key identification skills. No backend.
 
----
+## File Structure
+app/          ← Next.js App Router pages
+components/   ← UI components
+lib/
+  modules/    ← Core logic/data
 
-## Pipeline Overview
+## Tech Stack
+- Next.js (App Router)
+- Tailwind CSS
+- Deployed: Vercel
+- Router: next/navigation (built in — do not install react-router-dom)
 
-This project uses a 7-agent pipeline with manual developer gates between each handoff.
-Agent prompts live in `/agents/`. Load the appropriate agent file at the start of each session.
+## Current Sprint: v2 — Adaptive Engine + Dashboard (DESIGN_V2.md)
 
-```
-[Agent 1] Intake & Planner
-[Agent 2] Architect
-[Agent 3] UI/UX Designer
-[Agent 4] Builder          ← fully self-directed
-[Agent 5] Code Reviewer
-[Agent 6] QA & Peer Review
-[Agent 7] Deployment & Monitor
-```
+### Phase 1 — Adaptive Engine + Dashboard Shell  [in progress]
+- `lib/adaptive.ts` — Leitner box state in localStorage (key `mtt_adaptive_v1`)
+- `Question.conceptKey` drives per-concept weighting in `generateQuestion()`
+- `AppShell.tsx` toggles between Dashboard and Quiz views (no router)
+- `Dashboard.tsx` shows overall stats + per-module accuracy cards; clicking a card starts a focused quiz
+- Home button on `QuizApp` returns to the dashboard without a page reload — solves prior Task 1
+- Task 2 (Circle of Fifths show/hide toggle) is already implemented as the collapsible reference panel — done
 
----
+### Phase 2+ (later)
+- Scales module (`lib/modules/scale-id.ts`)
+- Harmony module (`lib/modules/harmonize.ts`)
+- Trend indicators + weakest-concepts list on dashboard
+- ARIA pass + sanitize `dangerouslySetInnerHTML`
 
-## Global Rules — Apply to Every Agent
-
-### Gates
-- No agent proceeds to the next phase without explicit developer approval in chat.
-- Gate sign-off must be logged in `docs/decisions.md` with a timestamp.
-- "Looks good" is not sign-off. Sign-off is: *"Approved. Agent [N] proceed."*
-
-### Branching
-- All code work happens on feature branches. Format: `feature/agent4-[feature-name]`
-- Never commit directly to `main`.
-- `main` is only touched by Agent 7 at deployment, after all gate approvals are logged.
-
-### Commit Messages
-Follow conventional commits format:
-```
-feat: add user authentication module
-fix: resolve null pointer on empty cart
-chore: update dependencies
-docs: add architecture decision for auth approach
-```
-
-### Logging
-Every agent writes to the repo. Nothing lives only in chat.
-
-| File | Owner | Trigger |
-|---|---|---|
-| `docs/build-log.md` | Agent 4 | Every build session |
-| `docs/architecture.md` | Agent 2 | Architecture phase; updated on approved changes |
-| `docs/decisions.md` | Any agent | Any deviation or gate approval |
-| `docs/deployment-log.md` | Agent 7 | Every deployment |
-| `docs/qa-reports/` | Agent 6 | Every QA cycle (timestamped) |
-
-### Unauthorized Actions
-No agent may:
-- Add features not in the approved spec
-- Change the project goal or scope
-- Approve its own gate
-- Merge to `main`
-- Act on missing information — flag it and stop
-
-### Missing Information Protocol
-If an agent cannot complete its task due to missing information:
-1. State exactly what is missing
-2. State what the impact is
-3. Stop and wait for developer input
-Do not guess. Do not proceed with assumptions.
-
----
-
-## How to Start a Session
-
-1. Open Claude Code in the project root
-2. Tell Claude which agent is active: *"We are running Agent [N]."*
-3. Claude Code will load this file automatically and reference the appropriate agent prompt in `/agents/`
-4. Provide the required inputs for that agent (listed in each agent file)
-
----
-
-## Tech Stack Defaults
-
-These apply unless Agent 2 documents a different decision in `docs/architecture.md`:
-
-- **Frontend:** React (Vite)
-- **Hosting:** Vercel
-- **Version control:** GitHub
-- **Error monitoring:** Sentry (free tier)
-- **Uptime monitoring:** UptimeRobot (free tier)
-- **Styling:** Tailwind CSS
-- **Environment variables:** `.env.example` maintained in repo (no secrets committed)
-
----
-
-## Roadmap (Deferred — Do Not Implement in v1)
-
-- Automated test suite and CI/CD pre-deploy testing
-- Parallel agent execution
-- Staging environment
-- Database and auth layer standards
-- Multi-environment `.env` management
+## Rules
+- No new features beyond current sprint tasks
+- Read a component file before editing it — do not assume its structure
+- Do not modify quiz question data unless explicitly instructed
+- Do not install new dependencies without explicit developer approval
+- If anything is unclear, stop and ask — do not assume
