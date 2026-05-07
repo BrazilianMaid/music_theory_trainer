@@ -8,6 +8,7 @@ import {
   overallStats,
   type AdaptiveState,
 } from '@/lib/adaptive'
+import { ThemeToggle } from './ThemeToggle'
 
 interface QuizConfig {
   mode: string
@@ -34,17 +35,21 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
     : `${Math.round(stats.accuracy * 100)}%`
 
   return (
-    <main className="min-h-screen bg-bg flex flex-col items-center px-4 py-10">
-      <h1 className="font-serif text-gold text-[1.8rem] tracking-[0.05em] mb-1">
+    <main className="min-h-screen bg-bg flex flex-col items-center px-4 py-10 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
+      <h1 className="font-serif text-accent text-[1.8rem] tracking-[0.05em] mb-1">
         Circle of Fifths Trainer
       </h1>
-      <p className="text-[0.7rem] text-text-ghost uppercase tracking-[0.1em] mb-8">
+      <p className="text-[0.7rem] text-text-dim uppercase tracking-[0.1em] mb-8">
         Practice · Track · Master
       </p>
 
       <div className="w-full max-w-[680px]">
         {/* Overall stats */}
-        <section className="bg-surface border border-border rounded-md p-5 mb-5">
+        <section className="bg-surface border border-border rounded-md p-5 mb-5 shadow-sm">
           <div className="text-[0.6rem] text-text-faint uppercase tracking-widest mb-3">
             Overall
           </div>
@@ -56,7 +61,7 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
         </section>
 
         {/* Module breakdown */}
-        <section className="bg-surface border border-border rounded-md p-5 mb-6">
+        <section className="bg-surface border border-border rounded-md p-5 mb-6 shadow-sm">
           <div className="text-[0.6rem] text-text-faint uppercase tracking-widest mb-3">
             By Quiz Type
           </div>
@@ -80,7 +85,7 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
         <section className="flex flex-col gap-2">
           <button
             onClick={() => onStartQuiz({ mode: 'all' })}
-            className="w-full bg-gold text-bg border-none font-mono text-[0.85rem] font-medium py-[14px] rounded cursor-pointer tracking-[0.08em] hover:bg-gold-light transition-colors uppercase"
+            className="w-full bg-accent text-white border-none font-sans text-[0.85rem] font-medium py-[14px] rounded cursor-pointer tracking-[0.08em] hover:bg-accent-light transition-colors uppercase"
           >
             Start Quiz — All Types
           </button>
@@ -120,18 +125,18 @@ function ModuleCard({
   return (
     <button
       onClick={onClick}
-      className="text-left bg-surface-alt border border-border-light rounded p-3 hover:border-gold hover:bg-[#1a1700] transition-colors group"
+      className="text-left bg-surface-alt border border-border-light rounded p-3 hover:border-accent hover:bg-surface-tint transition-colors group"
     >
-      <div className="text-[0.65rem] text-text-dim uppercase tracking-[0.08em] group-hover:text-gold transition-colors">
+      <div className="text-[0.65rem] text-text-dim uppercase tracking-[0.08em] group-hover:text-accent transition-colors">
         {label}
       </div>
       <div className="text-[1.3rem] font-medium text-text-primary mt-1">{display}</div>
-      <div className="h-[3px] bg-[#1a1a1a] rounded-sm overflow-hidden mt-2">
+      <div className="h-[3px] bg-border rounded-sm overflow-hidden mt-2">
         <div
           className="h-full rounded-sm"
           style={{
             width: `${barWidth}%`,
-            background: 'linear-gradient(90deg, #c9a84c, #e0bd60)',
+            background: 'linear-gradient(90deg, var(--accent), var(--accent-light))',
           }}
         />
       </div>

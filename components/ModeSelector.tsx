@@ -19,10 +19,10 @@ export function ModeSelector({ modes, currentMode, onModeChange }: ModeSelectorP
           key={mode.id}
           onClick={() => onModeChange(mode.id)}
           className={[
-            'border font-mono text-[0.65rem] px-3 py-[6px] rounded-sm uppercase tracking-[0.08em] transition-all',
+            'border font-sans text-[0.65rem] px-3 py-[6px] rounded-sm uppercase tracking-[0.08em] transition-all',
             currentMode === mode.id
-              ? 'border-gold text-gold bg-[#1a1700]'
-              : 'border-border-light text-text-dim bg-surface-alt hover:border-gold hover:text-gold hover:bg-[#1a1700]',
+              ? 'border-accent text-accent bg-surface-tint'
+              : 'border-border-light text-text-dim bg-surface-alt hover:border-accent hover:text-accent hover:bg-surface-tint',
           ].join(' ')}
         >
           {mode.label}

@@ -13,6 +13,19 @@ function annular(
   return `M ${x1} ${y1} A ${r2} ${r2} 0 ${large} 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 ${large} 0 ${x4} ${y4} Z`
 }
 
+type Bucket = 'sharp' | 'flat' | 'boundary' | 'default'
+
+function bucketFor(i: number): Bucket {
+  if (i >= 1 && i <= 5) return 'sharp'
+  if (i === 6) return 'boundary'
+  if (i >= 7 && i <= 11) return 'flat'
+  return 'default'
+}
+
+const BG: Record<Bucket, string>     = { sharp: 'var(--circle-sharp-bg)',     flat: 'var(--circle-flat-bg)',     boundary: 'var(--circle-boundary-bg)',     default: 'var(--circle-default-bg)' }
+const STROKE: Record<Bucket, string> = { sharp: 'var(--circle-sharp-border)', flat: 'var(--circle-flat-border)', boundary: 'var(--circle-boundary-border)', default: 'var(--circle-default-border)' }
+const TEXT: Record<Bucket, string>   = { sharp: 'var(--circle-sharp-text)',   flat: 'var(--circle-flat-text)',   boundary: 'var(--circle-boundary-text)',   default: 'var(--circle-default-text)' }
+
 export function CircleOfFifths() {
   const cx = 240, cy = 240
   const outerR = 200, midR = 148, innerR = 100, sigR = 68
@@ -30,35 +43,35 @@ export function CircleOfFifths() {
     >
       <defs>
         <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%"   stopColor="#1a1a2e" />
-          <stop offset="100%" stopColor="#0d0d0d" />
+          <stop offset="0%"   style={{ stopColor: 'var(--circle-bg-start)' }} />
+          <stop offset="100%" style={{ stopColor: 'var(--circle-bg-end)' }} />
         </radialGradient>
       </defs>
 
-      <circle cx={cx} cy={cy} r={outerR + 8} fill="url(#bgGrad)" stroke="#2a2a2a" strokeWidth="1" />
+      <circle
+        cx={cx} cy={cy} r={outerR + 8}
+        fill="url(#bgGrad)"
+        style={{ stroke: 'var(--circle-edge)' }}
+        strokeWidth="1"
+      />
 
       {CIRCLE_DATA.map((d, i) => {
         const startAngle = (i / n) * 2 * Math.PI - Math.PI / 2 - Math.PI / n
         const endAngle   = ((i + 1) / n) * 2 * Math.PI - Math.PI / 2 - Math.PI / n
         const midAngle   = (startAngle + endAngle) / 2
-
-        const isSharp = i >= 1 && i <= 5
-        const isFlat  = i >= 7 && i <= 11
-        const isBoth  = i === 6
-
-        const outerFill   = isSharp ? '#1a2a1a' : isFlat ? '#2a1a1a' : isBoth ? '#1a1a2a' : '#1e1a10'
-        const outerStroke = isSharp ? '#2d612d' : isFlat ? '#612d2d' : isBoth ? '#2d2d61' : '#4a3a10'
-        const majorColor  = isSharp ? '#7bde8c' : isFlat ? '#de8c7b' : isBoth ? '#9b9bde' : '#c9a84c'
+        const b = bucketFor(i)
 
         return (
           <g key={i}>
             <path
               d={annular(cx, cy, midR + 2, outerR, startAngle, endAngle)}
-              fill={outerFill} stroke={outerStroke} strokeWidth="1"
+              style={{ fill: BG[b], stroke: STROKE[b] }}
+              strokeWidth="1"
             />
             <path
               d={annular(cx, cy, innerR + 2, midR - 2, startAngle, endAngle)}
-              fill="#1a1a2e" stroke="#2d3561" strokeWidth="1"
+              style={{ fill: 'var(--circle-minor-bg)', stroke: 'var(--circle-minor-border)' }}
+              strokeWidth="1"
             />
             <text
               x={cx + majorR * Math.cos(midAngle)}
@@ -66,7 +79,8 @@ export function CircleOfFifths() {
               textAnchor="middle" dominantBaseline="central"
               fontFamily="var(--font-mono), monospace"
               fontSize={d.major.length > 3 ? 9 : 13}
-              fontWeight="500" fill={majorColor}
+              fontWeight="500"
+              style={{ fill: TEXT[b] }}
             >
               {d.major}
             </text>
@@ -76,7 +90,8 @@ export function CircleOfFifths() {
               textAnchor="middle" dominantBaseline="central"
               fontFamily="var(--font-mono), monospace"
               fontSize={d.minor.length > 4 ? 8 : 10}
-              fontWeight="400" fill="#7b8cde"
+              fontWeight="400"
+              style={{ fill: 'var(--circle-minor-text)' }}
             >
               {d.minor}
             </text>
@@ -85,7 +100,8 @@ export function CircleOfFifths() {
               y={cy + sigR * Math.sin(midAngle)}
               textAnchor="middle" dominantBaseline="central"
               fontFamily="var(--font-mono), monospace"
-              fontSize="9" fontWeight="400" fill="#555"
+              fontSize="9" fontWeight="400"
+              style={{ fill: 'var(--circle-sig-text)' }}
             >
               {d.sig}
             </text>
@@ -93,22 +109,30 @@ export function CircleOfFifths() {
         )
       })}
 
-      <circle cx={cx} cy={cy} r={innerR - 2} fill="#0d0d0d" stroke="#2a2a2a" strokeWidth="1" />
+      <circle
+        cx={cx} cy={cy} r={innerR - 2}
+        style={{ fill: 'var(--circle-center-bg)', stroke: 'var(--circle-edge)' }}
+        strokeWidth="1"
+      />
 
       <text x={cx} y={cy - 10} textAnchor="middle" dominantBaseline="central"
-            fontFamily="var(--font-playfair), serif" fontSize="13" fontWeight="400" fill="#c9a84c">
+            fontFamily="var(--font-playfair), serif" fontSize="13" fontWeight="400"
+            style={{ fill: 'var(--circle-center-text)' }}>
         Circle
       </text>
       <text x={cx} y={cy + 8} textAnchor="middle" dominantBaseline="central"
-            fontFamily="var(--font-playfair), serif" fontSize="13" fontWeight="400" fill="#c9a84c">
+            fontFamily="var(--font-playfair), serif" fontSize="13" fontWeight="400"
+            style={{ fill: 'var(--circle-center-text)' }}>
         of Fifths
       </text>
       <text x={cx} y={cy + 26} textAnchor="middle" dominantBaseline="central"
-            fontFamily="var(--font-mono), monospace" fontSize="8" fontWeight="400" fill="#444">
+            fontFamily="var(--font-mono), monospace" fontSize="8" fontWeight="400"
+            style={{ fill: 'var(--circle-caption-text)' }}>
         (sig counts)
       </text>
       <text x={cx} y={14} textAnchor="middle" dominantBaseline="central"
-            fontFamily="var(--font-mono), monospace" fontSize="8" fontWeight="400" fill="#444">
+            fontFamily="var(--font-mono), monospace" fontSize="8" fontWeight="400"
+            style={{ fill: 'var(--circle-caption-text)' }}>
         ↻ +1♯ clockwise   ↺ +1♭ counter-clockwise
       </text>
     </svg>

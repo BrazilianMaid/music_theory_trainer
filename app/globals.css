@@ -2,14 +2,180 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme tokens ──────────────────────────────────────────────────────── */
+/* Light is the default; .dark on <html> swaps in the dark palette.        */
+:root {
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --surface-alt: #f3eee5;
+  --surface-deep: #ece6d8;
+  --surface-tint: #e0ecec;
+
+  --border: #e6dfd0;
+  --border-light: #d4cbb8;
+  --border-strong: #c4bcae;
+
+  --text-primary: #2a2520;
+  --text-muted: #5a5247;
+  --text-dim: #867d70;
+  --text-faint: #a59c8e;
+  --text-ghost: #c4bcae;
+
+  --accent: #2c6e6e;
+  --accent-light: #3a8585;
+  --accent-deep: #1d5151;
+
+  --correct: #2d8a4f;
+  --correct-tint: #e8f1e8;
+  --correct-bright: #2d8a4f;
+
+  --wrong: #a8392c;
+  --wrong-tint: #f5e8e6;
+  --wrong-bright: #a8392c;
+
+  --minor: #4a5990;
+  --minor-dark: #c4cbe0;
+
+  /* Quiz-mode badges (tint bg, dark fg, soft border in light) */
+  --badge-default-bg: #ece6d8;
+  --badge-default-text: #5a5247;
+  --badge-default-border: #d4cbb8;
+
+  --badge-chords-bg: #e8f1e8;
+  --badge-chords-text: #2d6b2d;
+  --badge-chords-border: #bcd9bc;
+
+  --badge-reverse-bg: #f5e8e6;
+  --badge-reverse-text: #8a3528;
+  --badge-reverse-border: #d9bcbc;
+
+  --badge-roman-bg: #f3ede0;
+  --badge-roman-text: #7a6028;
+  --badge-roman-border: #d9d0bc;
+
+  --badge-scales-bg: #e0ecec;
+  --badge-scales-text: #2c6e6e;
+  --badge-scales-border: #bcd1d1;
+
+  /* Circle of Fifths SVG palette */
+  --circle-bg-start: #f8f2e6;
+  --circle-bg-end: #faf7f2;
+  --circle-edge: #d4cbb8;
+  --circle-sharp-bg: #e8f1e8;
+  --circle-sharp-border: #bcd9bc;
+  --circle-sharp-text: #2d6b2d;
+  --circle-flat-bg: #f5e8e6;
+  --circle-flat-border: #d9bcbc;
+  --circle-flat-text: #8a3528;
+  --circle-boundary-bg: #e6e8f1;
+  --circle-boundary-border: #bcc1d9;
+  --circle-boundary-text: #4a5990;
+  --circle-default-bg: #f3ede0;
+  --circle-default-border: #d9d0bc;
+  --circle-default-text: #7a6028;
+  --circle-minor-bg: #ece6d8;
+  --circle-minor-border: #c4bcae;
+  --circle-minor-text: #4a5990;
+  --circle-center-bg: #ffffff;
+  --circle-center-text: #2c6e6e;
+  --circle-sig-text: #a59c8e;
+  --circle-caption-text: #a59c8e;
+
+  /* Guitar tip callout */
+  --guitar-bg: #e8f1e8;
+  --guitar-border: #bcd9bc;
+  --guitar-text: #2d6b2d;
+}
+
+.dark {
+  --bg: #0d0d0d;
+  --surface: #111111;
+  --surface-alt: #161616;
+  --surface-deep: #080808;
+  --surface-tint: #1a1700;
+
+  --border: #252525;
+  --border-light: #303030;
+  --border-strong: #2a2a2a;
+
+  --text-primary: #e8e0d0;
+  --text-muted: #aaaaaa;
+  --text-dim: #777777;
+  --text-faint: #555555;
+  --text-ghost: #444444;
+
+  --accent: #c9a84c;
+  --accent-light: #e0bd60;
+  --accent-deep: #b39838;
+
+  --correct: #5cb85c;
+  --correct-tint: #0a1f0a;
+  --correct-bright: #7bde8c;
+
+  --wrong: #c0392b;
+  --wrong-tint: #1f0a0a;
+  --wrong-bright: #de8c7b;
+
+  --minor: #7b8cde;
+  --minor-dark: #2d3561;
+
+  --badge-default-bg: #1a1a2e;
+  --badge-default-text: #7b8cde;
+  --badge-default-border: #2d3561;
+
+  --badge-chords-bg: #1a2e1a;
+  --badge-chords-text: #7bde8c;
+  --badge-chords-border: #2d612d;
+
+  --badge-reverse-bg: #2e1a1a;
+  --badge-reverse-text: #de8c7b;
+  --badge-reverse-border: #612d2d;
+
+  --badge-roman-bg: #2e2a1a;
+  --badge-roman-text: #dec97b;
+  --badge-roman-border: #615d2d;
+
+  --badge-scales-bg: #1a2e2e;
+  --badge-scales-text: #7bcfde;
+  --badge-scales-border: #2d6161;
+
+  --circle-bg-start: #1a1a2e;
+  --circle-bg-end: #0d0d0d;
+  --circle-edge: #2a2a2a;
+  --circle-sharp-bg: #1a2a1a;
+  --circle-sharp-border: #2d612d;
+  --circle-sharp-text: #7bde8c;
+  --circle-flat-bg: #2a1a1a;
+  --circle-flat-border: #612d2d;
+  --circle-flat-text: #de8c7b;
+  --circle-boundary-bg: #1a1a2a;
+  --circle-boundary-border: #2d2d61;
+  --circle-boundary-text: #9b9bde;
+  --circle-default-bg: #1e1a10;
+  --circle-default-border: #4a3a10;
+  --circle-default-text: #c9a84c;
+  --circle-minor-bg: #1a1a2e;
+  --circle-minor-border: #2d3561;
+  --circle-minor-text: #7b8cde;
+  --circle-center-bg: #0d0d0d;
+  --circle-center-text: #c9a84c;
+  --circle-sig-text: #555;
+  --circle-caption-text: #444;
+
+  --guitar-bg: #0e1a0e;
+  --guitar-border: #2d612d;
+  --guitar-text: #7bde8c;
+}
+
 /* ── Base ──────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: #0d0d0d;
-  color: #e8e0d0;
-  font-family: var(--font-mono), monospace;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 /* ── Deep dive content ─────────────────────────────────────────────────── */
@@ -17,15 +183,15 @@ body {
 .deep-dive {
   font-size: 0.78rem;
   line-height: 1.7;
-  color: #999;
+  color: var(--text-muted);
 }
 
 .deep-dive h4 {
   font-family: var(--font-playfair), serif;
-  font-size: 0.85rem;
-  color: #c9a84c;
+  font-size: 0.9rem;
+  color: var(--accent);
   margin-bottom: 8px;
-  font-weight: 400;
+  font-weight: 500;
   font-style: italic;
 }
 
@@ -38,22 +204,22 @@ body {
 }
 
 .deep-dive strong {
-  color: #ddd;
+  color: var(--text-primary);
 }
 
 .deep-dive em {
-  color: #c9a84c;
+  color: var(--accent);
   font-style: normal;
 }
 
 .guitar-tip {
-  background: #0e1a0e;
-  border-left: 2px solid #2d612d;
+  background: var(--guitar-bg);
+  border-left: 2px solid var(--guitar-border);
   padding: 8px 12px;
   border-radius: 0 3px 3px 0;
   margin-top: 10px;
   font-size: 0.73rem;
-  color: #7bde8c;
+  color: var(--guitar-text);
 }
 
 .guitar-tip::before {
