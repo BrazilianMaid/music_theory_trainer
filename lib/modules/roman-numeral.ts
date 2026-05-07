@@ -1,11 +1,14 @@
-import type { QuizModule, Question } from '../types'
+import type { QuizModule, Question, Instrument } from '../types'
 import { KEY_CHORDS, DEGREES, QUALITIES } from '../theory-data'
 
 const DEEP_DIVE = `
   <h4>Why Roman Numerals Are the Real Language of Music</h4>
   <p>Chord names (G, Am, D) are <em>key-specific</em>. Roman numerals (I, vi, V) are <em>universal</em>. A I–vi–IV–V progression sounds identical in every key — same emotional shape, same tension and release, just transposed. This is why musicians communicate in Roman numerals: "it's a I–IV–V in whatever key the singer needs."</p>
-  <p>Once you internalize Roman numerals, you can learn a song's <em>structure</em> once and play it in any key. You stop memorizing chord names and start memorizing relationships. That's the difference between a musician who plays songs and one who understands music.</p>
-  <div class="guitar-tip">The I–vi–IV–V ("50s progression") is in thousands of songs: "Stand By Me," "Every Breath You Take," "Don't Stop Believin'." Learn the Roman numeral pattern once, play it in the key your band needs. No re-learning required.</div>`
+  <p>Once you internalize Roman numerals, you can learn a song's <em>structure</em> once and play it in any key. You stop memorizing chord names and start memorizing relationships. That's the difference between a musician who plays songs and one who understands music.</p>`
+
+const GUITAR_TIP = `The I–vi–IV–V ("50s progression") is in thousands of songs: "Stand By Me," "Every Breath You Take," "Don't Stop Believin'." Learn the Roman numeral pattern once, play it in the key your band needs. No re-learning required.`
+
+const PIANO_TIP = `On piano, internalizing Roman numerals lets you transpose any progression by sliding your hand to a new tonic. The shape of a I–vi–IV–V is the same in every key — only the white/black combinations under your fingers change. The keyboard rewards this thinking because each scale's pattern is visual: same degrees, different real estate.`
 
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
@@ -51,10 +54,17 @@ function describe(conceptKey: string): string | null {
   return `${m[2]} in ${m[1]} major`
 }
 
+function getTip(_question: Question, instrument: Instrument): string | null {
+  if (instrument === 'guitar') return `<div class="guitar-tip">${GUITAR_TIP}</div>`
+  if (instrument === 'piano') return `<div class="piano-tip">${PIANO_TIP}</div>`
+  return null
+}
+
 export const romanNumeralModule: QuizModule = {
   id: 'romanNumeral',
   label: 'Roman Numeral',
   generate,
   deepDive,
   describe,
+  getTip,
 }

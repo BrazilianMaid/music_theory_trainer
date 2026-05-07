@@ -1,4 +1,4 @@
-import type { Question, QuizModule } from './types'
+import type { Question, QuizModule, Instrument } from './types'
 import type { AdaptiveState } from './adaptive'
 import { conceptPriority } from './adaptive'
 import { sigToKeyModule }     from './modules/sig-to-key'
@@ -148,8 +148,12 @@ export function moduleForConcept(conceptKey: string): QuizModule | undefined {
 
 /**
  * Delegate deep-dive HTML generation to the module that owns the question type.
+ * Appends an instrument-specific tip block (if the module provides one and the
+ * user hasn't selected 'none').
  */
-export function getDeepDive(question: Question): string {
+export function getDeepDive(question: Question, instrument: Instrument = 'guitar'): string {
   const mod = MODULE_REGISTRY.find((m) => m.id === question.type)
-  return mod?.deepDive(question) ?? '<p>No deep dive available.</p>'
+  const narrative = mod?.deepDive(question) ?? '<p>No deep dive available.</p>'
+  const tip = mod?.getTip?.(question, instrument) ?? ''
+  return narrative + tip
 }

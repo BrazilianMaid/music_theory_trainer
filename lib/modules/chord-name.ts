@@ -1,11 +1,14 @@
-import type { QuizModule, Question } from '../types'
+import type { QuizModule, Question, Instrument } from '../types'
 import { KEY_CHORDS, DEGREES, QUALITIES } from '../theory-data'
 
 const DEEP_DIVE = `
   <h4>How to Find Any Chord in Any Key</h4>
   <p>Every major key produces the same quality pattern: <strong>I(maj) ii(min) iii(min) IV(maj) V(maj) vi(min)</strong>. This comes directly from the major scale — stack thirds on each scale degree and the quality falls out automatically.</p>
-  <p>You don't need to memorize all 84 chords (12 keys × 7 degrees). You need to memorize the pattern once, and know the scale. If you know A major scale (A B C# D E F# G#), the ii chord is built on B = Bm, the IV is built on D = D major, the V is on E = E major. The pattern does the work.</p>
-  <div class="guitar-tip">Quick field method: root note of the chord = scale degree. Major scale degrees 1, 4, 5 = major chords. Degrees 2, 3, 6 = minor chords. You already know the major scale shapes on guitar — map the degrees to those positions.</div>`
+  <p>You don't need to memorize all 84 chords (12 keys × 7 degrees). You need to memorize the pattern once, and know the scale. If you know A major scale (A B C# D E F# G#), the ii chord is built on B = Bm, the IV is built on D = D major, the V is on E = E major. The pattern does the work.</p>`
+
+const GUITAR_TIP = `Quick field method: root note of the chord = scale degree. Major scale degrees 1, 4, 5 = major chords. Degrees 2, 3, 6 = minor chords. You already know the major scale shapes on guitar — map the degrees to those positions.`
+
+const PIANO_TIP = `On piano, every diatonic chord is built by skipping one white key and stacking thirds: I uses scale degrees 1–3–5, ii uses 2–4–6, iii uses 3–5–7, and so on. The C major scale lets you build all 7 diatonic chords using only white keys — that's why C is the natural starting point on piano. In any other key, the same skip-a-key pattern works once you account for the accidentals.`
 
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
@@ -55,10 +58,17 @@ function describe(conceptKey: string): string | null {
   return `${m[2]} chord in ${m[1]} major`
 }
 
+function getTip(_question: Question, instrument: Instrument): string | null {
+  if (instrument === 'guitar') return `<div class="guitar-tip">${GUITAR_TIP}</div>`
+  if (instrument === 'piano') return `<div class="piano-tip">${PIANO_TIP}</div>`
+  return null
+}
+
 export const chordNameModule: QuizModule = {
   id: 'chordName',
   label: 'Chord Name',
   generate,
   deepDive,
   describe,
+  getTip,
 }

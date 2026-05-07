@@ -10,6 +10,8 @@ import { ModeSelector }   from '@/components/ModeSelector'
 import { StreakBar }      from '@/components/StreakBar'
 import { QuizCard }       from '@/components/QuizCard'
 import { ThemeToggle }    from '@/components/ThemeToggle'
+import { InstrumentSelector } from '@/components/InstrumentSelector'
+import { useInstrument }  from '@/lib/instrument'
 
 interface Scores {
   correct: number
@@ -43,6 +45,7 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
   const [answered, setAnswered]               = useState(false)
   const [selectedAnswer, setSelectedAnswer]   = useState<string | null>(null)
   const [circleOpen, setCircleOpen]           = useState(false)
+  const { instrument } = useInstrument()
 
   const handleAnswer = (answer: string) => {
     if (answered) return
@@ -76,7 +79,7 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
     setSelectedAnswer(null)
   }
 
-  const deepDiveContent = answered ? getDeepDive(currentQuestion) : ''
+  const deepDiveContent = answered ? getDeepDive(currentQuestion, instrument) : ''
 
   return (
     <main className="min-h-screen bg-bg flex flex-col items-center px-4 py-6 relative">
@@ -90,7 +93,8 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
         </button>
       )}
 
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <InstrumentSelector />
         <ThemeToggle />
       </div>
 

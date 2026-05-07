@@ -1,11 +1,14 @@
-import type { QuizModule, Question } from '../types'
+import type { QuizModule, Question, Instrument } from '../types'
 import { ALL_KEYS, KEY_SIGS } from '../theory-data'
 
 const DEEP_DIVE = `
   <h4>Memorizing the Key Signatures</h4>
   <p>The fastest path isn't memorizing all 15 separately — it's internalizing the two sequences and the rules. Sharp keys go clockwise (G D A E B F# C#), each adding one sharp. Flat keys go counter-clockwise (F Bb Eb Ab Db Gb Cb), each adding one flat.</p>
-  <p>Count your steps from C on the circle to get the number. G is 1 step clockwise = 1 sharp. Bb is 2 steps counter-clockwise = 2 flats. The circle <em>is</em> the answer.</p>
-  <div class="guitar-tip">The keys guitarists use most — E, A, D, G, B — are all sharp keys (4, 3, 2, 1, 5 sharps). That's not coincidence: those are the open string pitches, and musicians write in keys that suit their instrument.</div>`
+  <p>Count your steps from C on the circle to get the number. G is 1 step clockwise = 1 sharp. Bb is 2 steps counter-clockwise = 2 flats. The circle <em>is</em> the answer.</p>`
+
+const GUITAR_TIP = `The keys guitarists use most — E, A, D, G, B — are all sharp keys (4, 3, 2, 1, 5 sharps). That's not coincidence: those are the open string pitches, and musicians write in keys that suit their instrument.`
+
+const PIANO_TIP = `On piano, the keys with the fewest white-key roots (Db, Gb, F#) feel hard at first but are surprisingly ergonomic — the black-key tonics let your fingers fall naturally into pentatonic shapes. Beginners often find Db major (5 flats) easier to play than B major (5 sharps), even though they look harder on the page.`
 
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
@@ -66,10 +69,17 @@ function describe(conceptKey: string): string | null {
   return `${key} major → ${sigStr}`
 }
 
+function getTip(_question: Question, instrument: Instrument): string | null {
+  if (instrument === 'guitar') return `<div class="guitar-tip">${GUITAR_TIP}</div>`
+  if (instrument === 'piano') return `<div class="piano-tip">${PIANO_TIP}</div>`
+  return null
+}
+
 export const keyToSigModule: QuizModule = {
   id: 'keyToSig',
   label: 'Key → Sig',
   generate,
   deepDive,
   describe,
+  getTip,
 }
