@@ -88,7 +88,7 @@ export function QuizCard({
       {answered && (
         <button
           onClick={onNext}
-          className="w-full bg-accent text-white border-none font-sans text-[0.85rem] font-medium py-[13px] rounded cursor-pointer tracking-[0.08em] hover:bg-accent-light transition-colors mt-1"
+          className="w-full bg-accent text-accent-text border-none font-sans text-[0.85rem] font-medium py-[13px] rounded cursor-pointer tracking-[0.08em] hover:bg-accent-light transition-colors mt-1"
         >
           Next Question →
         </button>

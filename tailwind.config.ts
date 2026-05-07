@@ -29,6 +29,7 @@ const config: Config = {
         accent: 'var(--accent)',
         'accent-light': 'var(--accent-light)',
         'accent-deep': 'var(--accent-deep)',
+        'accent-text': 'var(--accent-text)',
 
         correct: 'var(--correct)',
         'correct-tint': 'var(--correct-tint)',

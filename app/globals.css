@@ -24,6 +24,7 @@
   --accent: #2c6e6e;
   --accent-light: #3a8585;
   --accent-deep: #1d5151;
+  --accent-text: #ffffff;
 
   --correct: #2d8a4f;
   --correct-tint: #e8f1e8;
@@ -107,6 +108,7 @@
   --accent: #c9a84c;
   --accent-light: #e0bd60;
   --accent-deep: #b39838;
+  --accent-text: #0d0d0d;
 
   --correct: #5cb85c;
   --correct-tint: #0a1f0a;

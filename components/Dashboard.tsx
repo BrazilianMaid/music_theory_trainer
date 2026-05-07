@@ -85,7 +85,7 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
         <section className="flex flex-col gap-2">
           <button
             onClick={() => onStartQuiz({ mode: 'all' })}
-            className="w-full bg-accent text-white border-none font-sans text-[0.85rem] font-medium py-[14px] rounded cursor-pointer tracking-[0.08em] hover:bg-accent-light transition-colors uppercase"
+            className="w-full bg-accent text-accent-text border-none font-sans text-[0.85rem] font-medium py-[14px] rounded cursor-pointer tracking-[0.08em] hover:bg-accent-light transition-colors uppercase"
           >
             Start Quiz — All Types
           </button>
