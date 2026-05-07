@@ -9,6 +9,7 @@ import { Scoreboard }     from '@/components/Scoreboard'
 import { ModeSelector }   from '@/components/ModeSelector'
 import { StreakBar }      from '@/components/StreakBar'
 import { QuizCard }       from '@/components/QuizCard'
+import { ThemeToggle }    from '@/components/ThemeToggle'
 
 interface Scores {
   correct: number
@@ -83,16 +84,20 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
         <button
           onClick={onHome}
           aria-label="Return to dashboard"
-          className="absolute top-4 left-4 text-text-dim hover:text-gold text-[0.7rem] font-mono uppercase tracking-widest transition-colors"
+          className="absolute top-4 left-4 text-text-dim hover:text-accent text-[0.7rem] font-sans uppercase tracking-widest transition-colors"
         >
           ← Home
         </button>
       )}
 
-      <h1 className="font-serif text-gold text-[1.6rem] tracking-[0.05em] mb-1">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+
+      <h1 className="font-serif text-accent text-[1.6rem] tracking-[0.05em] mb-1">
         Circle of Fifths Trainer
       </h1>
-      <p className="text-[0.7rem] text-text-ghost uppercase tracking-[0.1em] mb-6">
+      <p className="text-[0.7rem] text-text-dim uppercase tracking-[0.1em] mb-6">
         Key Signatures · Chord Function · Roman Numerals
       </p>
 
@@ -103,12 +108,11 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
         <button
           onClick={() => setCircleOpen(!circleOpen)}
           className={[
-            'w-full bg-surface-alt border border-[#2a2a2a] text-gold font-mono text-[0.7rem]',
+            'w-full bg-surface-alt border border-border text-accent font-sans text-[0.7rem]',
             'py-[10px] px-4 rounded cursor-pointer text-left tracking-[0.08em] uppercase',
             'flex justify-between items-center transition-colors',
-            circleOpen
-              ? 'hover:bg-[#1a1700] hover:border-gold rounded-b-none'
-              : 'hover:bg-[#1a1700] hover:border-gold',
+            'hover:bg-surface-tint hover:border-accent',
+            circleOpen ? 'rounded-b-none' : '',
           ].join(' ')}
         >
           <span>◎ Circle of Fifths Reference</span>
@@ -121,17 +125,17 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
         </button>
 
         {circleOpen && (
-          <div className="bg-[#111] border border-[#252525] border-t-0 rounded-b-md px-5 py-5">
+          <div className="bg-surface border border-border border-t-0 rounded-b-md px-5 py-5">
             <div className="flex justify-center">
               <CircleOfFifths />
             </div>
             <div className="flex gap-4 justify-center flex-wrap mt-3 text-[0.65rem] text-text-dim">
-              <LegendItem color="#c9a84c" label="Major keys (outer)" />
-              <LegendItem color="#7b8cde" label="Relative minors (inner)" />
-              <LegendItem color="#5cb85c" label="Sharp keys →" />
-              <LegendItem color="#de8c7b" label="← Flat keys" />
+              <LegendItem cssVar="--circle-default-text" label="Major keys (outer)" />
+              <LegendItem cssVar="--circle-minor-text"   label="Relative minors (inner)" />
+              <LegendItem cssVar="--circle-sharp-text"   label="Sharp keys →" />
+              <LegendItem cssVar="--circle-flat-text"    label="← Flat keys" />
             </div>
-            <p className="mt-3 text-[0.7rem] text-[#666] text-center leading-relaxed italic">
+            <p className="mt-3 text-[0.7rem] text-text-faint text-center leading-relaxed italic">
               Each inner minor key shares the same notes &amp; key signature as the major key directly outside it.
               <br />
               They are &quot;relatives&quot; — same notes, different home base.
@@ -156,10 +160,13 @@ export default function QuizApp({ config, onHome }: QuizAppProps = {}) {
   )
 }
 
-function LegendItem({ color, label }: { color: string; label: string }) {
+function LegendItem({ cssVar, label }: { cssVar: string; label: string }) {
   return (
     <div className="flex items-center gap-[6px]">
-      <div className="w-[10px] h-[10px] rounded-full" style={{ background: color }} />
+      <div
+        className="w-[10px] h-[10px] rounded-full"
+        style={{ background: `var(${cssVar})` }}
+      />
       <span>{label}</span>
     </div>
   )

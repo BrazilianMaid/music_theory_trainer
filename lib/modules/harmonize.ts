@@ -161,9 +161,18 @@ function deepDive(question: Question): string {
   return DEEP_DIVES[degree ?? ''] ?? '<p>No deep dive available.</p>'
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^harmonize:([^:]+):([^:]+):(.+)$/)
+  if (!m) return null
+  const [, key, keyType, degree] = m
+  const ktLabel = KEY_TYPE_LABEL[keyType as 'major' | 'naturalMinor'] ?? keyType
+  return `${degree} in ${key} ${ktLabel}`
+}
+
 export const harmonizeModule: QuizModule = {
   id: 'harmonize',
   label: 'Harmonize',
   generate,
   deepDive,
+  describe,
 }

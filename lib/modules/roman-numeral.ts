@@ -45,9 +45,16 @@ function deepDive(): string {
   return DEEP_DIVE
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^romanNumeral:([^:]+):(.+)$/)
+  if (!m) return null
+  return `${m[2]} in ${m[1]} major`
+}
+
 export const romanNumeralModule: QuizModule = {
   id: 'romanNumeral',
   label: 'Roman Numeral',
   generate,
   deepDive,
+  describe,
 }

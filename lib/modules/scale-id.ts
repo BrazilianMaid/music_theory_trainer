@@ -113,9 +113,20 @@ function deepDive(question: Question): string {
   return DEEP_DIVES[scaleId ?? ''] ?? '<p>No deep dive available.</p>'
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^(scaleId|scaleSpell):([^:]+):(.+)$/)
+  if (!m) return null
+  const [, kind, root, scaleId] = m
+  const scale = SCALE_TYPES.find((s) => s.id === scaleId)
+  const label = scale?.label ?? scaleId
+  const verb = kind === 'scaleSpell' ? 'spell' : 'identify'
+  return `${root} ${label} (${verb})`
+}
+
 export const scaleIdModule: QuizModule = {
   id: 'scaleId',
   label: 'Scales',
   generate,
   deepDive,
+  describe,
 }

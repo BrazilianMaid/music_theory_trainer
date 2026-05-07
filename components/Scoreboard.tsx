@@ -7,7 +7,7 @@ interface ScoreboardProps {
 
 export function Scoreboard({ correct, wrong, streak, total }: ScoreboardProps) {
   return (
-    <div className="flex gap-6 mb-5 bg-surface-alt border border-[#2a2a2a] px-6 py-3 rounded">
+    <div className="flex gap-6 mb-5 bg-surface-alt border border-border px-6 py-3 rounded">
       <ScoreItem label="Correct" value={correct} className="text-correct" />
       <ScoreItem label="Wrong"   value={wrong}   className="text-wrong" />
       <ScoreItem label="Streak"  value={streak}  className="text-text-primary" />

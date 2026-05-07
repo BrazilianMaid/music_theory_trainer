@@ -202,3 +202,69 @@ export function overallStats(state: AdaptiveState): OverallStats {
   const activeDays = new Set(state.sessionHistory.map((e) => e.date)).size
   return { totalAnswered, totalCorrect, accuracy, activeDays }
 }
+
+export interface WeakConceptEntry {
+  conceptKey: string
+  moduleId: string
+  box: Box
+  totalWrong: number
+  totalCorrect: number
+}
+
+/**
+ * Returns the user's weakest concepts, sorted by box ascending (lower box =
+ * weaker), then totalWrong descending (more misses = weaker among same box).
+ * Only concepts in box 1 or 2 — the ones the engine considers "weak" — are
+ * returned.
+ */
+export function weakConcepts(state: AdaptiveState, limit = 5): WeakConceptEntry[] {
+  const cards = Object.values(state.cards).filter((c) => c.box <= 2)
+  cards.sort((a, b) => {
+    if (a.box !== b.box) return a.box - b.box
+    return b.totalWrong - a.totalWrong
+  })
+  return cards.slice(0, limit).map((c) => ({
+    conceptKey: c.conceptKey,
+    moduleId: c.moduleId,
+    box: c.box,
+    totalWrong: c.totalWrong,
+    totalCorrect: c.totalCorrect,
+  }))
+}
+
+export type Trend = 'improving' | 'stable' | 'declining' | 'unknown'
+
+/**
+ * Compares accuracy in a module's most recent N session days vs. the prior N.
+ * Needs at least N sessions on each side to return a real trend; otherwise
+ * returns 'unknown' so the UI can render a neutral indicator.
+ */
+export function moduleTrend(state: AdaptiveState, moduleId: string, window = 7): Trend {
+  const days = state.sessionHistory
+    .filter((e) => moduleId in e.results)
+    .sort((a, b) => a.date.localeCompare(b.date))
+
+  if (days.length < window * 2) return 'unknown'
+
+  const recent = days.slice(-window)
+  const prior = days.slice(-window * 2, -window)
+
+  const acc = (entries: SessionEntry[]) => {
+    let c = 0, w = 0
+    for (const e of entries) {
+      const r = e.results[moduleId]
+      if (!r) continue
+      c += r.correct
+      w += r.wrong
+    }
+    return c + w === 0 ? 0 : c / (c + w)
+  }
+
+  const recentAcc = acc(recent)
+  const priorAcc = acc(prior)
+  const delta = recentAcc - priorAcc
+
+  if (delta > 0.05) return 'improving'
+  if (delta < -0.05) return 'declining'
+  return 'stable'
+}

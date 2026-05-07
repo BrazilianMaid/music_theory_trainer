@@ -14,9 +14,9 @@ export function DeepDive({ content }: DeepDiveProps) {
       <button
         onClick={() => setOpen(!open)}
         className={[
-          'w-full bg-transparent border-none border-t border-[#1e1e1e] text-text-dim font-mono',
+          'w-full bg-transparent border-t border-border text-text-dim font-sans',
           'text-[0.65rem] py-2 px-4 cursor-pointer text-left tracking-[0.08em] uppercase',
-          'flex justify-between items-center transition-colors hover:text-gold hover:bg-surface',
+          'flex justify-between items-center transition-colors hover:text-accent hover:bg-surface-alt',
         ].join(' ')}
       >
         <span>{open ? 'Explain Less' : 'Explain More'}</span>
@@ -30,7 +30,7 @@ export function DeepDive({ content }: DeepDiveProps) {
 
       {open && (
         <div
-          className="deep-dive px-4 py-[14px] border-t border-[#1a1a1a] bg-surface-deep"
+          className="deep-dive px-4 py-[14px] border-t border-border bg-surface-alt"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}
