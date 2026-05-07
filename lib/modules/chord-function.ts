@@ -77,9 +77,19 @@ function deepDive(question: Question): string {
   return DEEP_DIVES[question.answer] ?? '<p>No deep dive available.</p>'
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^chordFunction:(.+)$/)
+  if (!m) return null
+  const degree = m[1]
+  const idx = DEGREES.indexOf(degree)
+  if (idx < 0) return `${degree} function`
+  return `${degree} (${FUNCTIONS[idx]})`
+}
+
 export const chordFunctionModule: QuizModule = {
   id: 'chordFunction',
   label: 'Chord Function',
   generate,
   deepDive,
+  describe,
 }

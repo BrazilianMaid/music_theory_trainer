@@ -74,9 +74,23 @@ function deepDive(question: Question): string {
   return sig.type === 'sharp' ? DEEP_DIVES.sharp : DEEP_DIVES.flat
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^sigToKey:(.+)$/)
+  if (!m) return null
+  const key = m[1]
+  const sig = KEY_SIGS[key]
+  if (!sig) return `${key} major`
+  const sigStr =
+    sig.count === 0
+      ? 'no accidentals'
+      : `${sig.count} ${sig.type}${sig.count > 1 ? 's' : ''}`
+  return `${sigStr} → ${key} major`
+}
+
 export const sigToKeyModule: QuizModule = {
   id: 'sigToKey',
   label: 'Sig → Key',
   generate,
   deepDive,
+  describe,
 }

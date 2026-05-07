@@ -49,9 +49,16 @@ function deepDive(): string {
   return DEEP_DIVE
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^chordName:([^:]+):(.+)$/)
+  if (!m) return null
+  return `${m[2]} chord in ${m[1]} major`
+}
+
 export const chordNameModule: QuizModule = {
   id: 'chordName',
   label: 'Chord Name',
   generate,
   deepDive,
+  describe,
 }

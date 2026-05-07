@@ -40,6 +40,9 @@ export interface QuestionFilter {
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
 
 const CANDIDATE_COUNT = 6
+// When weakOnly is set, sample more candidates so we don't accidentally end
+// up with zero qualifying ones and fall through to a non-weak question.
+const WEAK_CANDIDATE_COUNT = 24
 
 function pickModule(mode: string, recentTypes: string[], filter?: QuestionFilter): QuizModule {
   let pool = mode === 'all'
@@ -86,12 +89,13 @@ export function generateQuestion(
   }
 
   const recentConcepts = new Set(recentTypes.slice(-2))
+  const poolSize = filter?.weakOnly ? WEAK_CANDIDATE_COUNT : CANDIDATE_COUNT
 
-  // Generate a small pool of candidates and pick the highest-priority one.
-  // Each candidate may come from a different module, so the module-level
-  // recency rule still applies.
+  // Generate a pool of candidates and pick the highest-priority one. Each
+  // candidate may come from a different module, so the module-level recency
+  // rule still applies.
   const candidates: Array<{ q: Question; score: number }> = []
-  for (let i = 0; i < CANDIDATE_COUNT; i++) {
+  for (let i = 0; i < poolSize; i++) {
     const mod = pickModule(mode, recentTypes, filter)
     const q = mod.generate()
     let score = conceptPriority(q.conceptKey, adaptive)
@@ -114,6 +118,32 @@ export function generateQuestion(
 
   // No due / qualifying concepts — never block the user, just take the first.
   return candidates[0].q
+}
+
+/**
+ * Render a one-line human label for a conceptKey by delegating to the owning
+ * module. Falls back to the raw key if no module claims it (shouldn't happen
+ * in normal use, but keeps the UI from crashing on stale localStorage data).
+ */
+export function describeConcept(conceptKey: string): string {
+  for (const mod of MODULE_REGISTRY) {
+    if (!mod.describe) continue
+    const label = mod.describe(conceptKey)
+    if (label) return label
+  }
+  return conceptKey
+}
+
+/**
+ * Find the module that owns a conceptKey by matching against each module's
+ * describe(). Used by the dashboard to label which module a weak concept
+ * belongs to.
+ */
+export function moduleForConcept(conceptKey: string): QuizModule | undefined {
+  for (const mod of MODULE_REGISTRY) {
+    if (mod.describe?.(conceptKey)) return mod
+  }
+  return undefined
 }
 
 /**
