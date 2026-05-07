@@ -81,9 +81,22 @@ function deepDive(question: Question): string {
   return question.meta?.dir === 'up' ? DEEP_DIVES.up : DEEP_DIVES.down
 }
 
+function describe(conceptKey: string): string | null {
+  const m = conceptKey.match(/^fifths:(.+):(up|down)$/)
+  if (!m) return null
+  const fromKey = m[1]
+  const dir = m[2] as 'up' | 'down'
+  const idx = CIRCLE_KEYS.indexOf(fromKey)
+  if (idx < 0) return `${fromKey} ${dir === 'up' ? 'clockwise' : 'counter-clockwise'}`
+  const toIdx = dir === 'up' ? (idx + 1) % 12 : (idx + 11) % 12
+  const toKey = CIRCLE_KEYS[toIdx]
+  return `${fromKey} → ${toKey} (${dir === 'up' ? 'clockwise' : 'counter-clockwise'})`
+}
+
 export const circleFifthsModule: QuizModule = {
   id: 'fifths',
   label: 'Circle Steps',
   generate,
   deepDive,
+  describe,
 }
