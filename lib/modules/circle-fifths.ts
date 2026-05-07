@@ -1,5 +1,5 @@
 import type { QuizModule, Question } from '../types'
-import { CIRCLE_KEYS } from '../theory-data'
+import { CIRCLE_KEYS, KEY_SIGS } from '../theory-data'
 
 const DEEP_DIVES = {
   up: `
@@ -17,6 +17,20 @@ const DEEP_DIVES = {
 
 const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5)
 const pick = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
+
+function signatureChangePhrase(from: string, to: string): string {
+  const f = KEY_SIGS[from]
+  const t = KEY_SIGS[to]
+  if (!f || !t) return ''
+
+  if (f.type === t.type || f.type === 'none' || t.type === 'none') {
+    if (t.count > f.count) return `adds one ${t.type === 'sharp' ? 'sharp' : 'flat'}`
+    if (t.count < f.count) return `removes one ${f.type === 'sharp' ? 'sharp' : 'flat'}`
+    return ''
+  }
+
+  return 'crosses the enharmonic boundary'
+}
 
 function generate(): Question {
   const fromKey = pick(CIRCLE_KEYS)
@@ -38,10 +52,15 @@ function generate(): Question {
           `What key shares its name with the <strong>IV chord of ${fromKey} major</strong>?`,
         ]
 
-  const explanation =
-    dir === 'up'
-      ? `Clockwise from ${fromKey} = <strong>${toKey}</strong>. Each step clockwise adds one sharp. ${toKey} is also the V chord of ${fromKey}.`
-      : `Counter-clockwise from ${fromKey} = <strong>${toKey}</strong>. Each step counter-clockwise adds one flat. ${toKey} is also the IV chord of ${fromKey}.`
+  const change = signatureChangePhrase(fromKey, toKey)
+  const isBoundary = change === 'crosses the enharmonic boundary'
+  const dirWord = dir === 'up' ? 'Clockwise' : 'Counter-clockwise'
+  const dirAdverb = dir === 'up' ? 'clockwise' : 'counter-clockwise'
+  const degree = dir === 'up' ? 'V' : 'IV'
+  const fifthClause = isBoundary
+    ? `(${toKey} is enharmonically the same pitch as the ${degree} of ${fromKey}.)`
+    : `${toKey} is also the ${degree} chord of ${fromKey}.`
+  const explanation = `${dirWord} from ${fromKey} = <strong>${toKey}</strong>. Each step ${dirAdverb} ${change}. ${fifthClause}`
 
   const wrongs = shuffle(CIRCLE_KEYS.filter((k) => k !== toKey)).slice(0, 3)
 
