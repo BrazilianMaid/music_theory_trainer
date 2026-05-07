@@ -203,33 +203,49 @@ export function overallStats(state: AdaptiveState): OverallStats {
   return { totalAnswered, totalCorrect, accuracy, activeDays }
 }
 
-export interface WeakConceptEntry {
-  conceptKey: string
+export interface WeakModuleEntry {
   moduleId: string
-  box: Box
-  totalWrong: number
+  accuracy: number
+  totalAttempts: number
   totalCorrect: number
+  totalWrong: number
 }
 
 /**
- * Returns the user's weakest concepts, sorted by box ascending (lower box =
- * weaker), then totalWrong descending (more misses = weaker among same box).
- * Only concepts in box 1 or 2 — the ones the engine considers "weak" — are
- * returned.
+ * Returns the user's weakest modules (topic-level rollup), sorted by accuracy
+ * ascending. Only modules with at least `minAttempts` recorded answers are
+ * eligible — keeps single-attempt modules from dominating the list with noise.
+ * Ties are broken by totalAttempts descending (more data = stronger signal).
  */
-export function weakConcepts(state: AdaptiveState, limit = 5): WeakConceptEntry[] {
-  const cards = Object.values(state.cards).filter((c) => c.box <= 2)
-  cards.sort((a, b) => {
-    if (a.box !== b.box) return a.box - b.box
-    return b.totalWrong - a.totalWrong
+export function weakModules(
+  state: AdaptiveState,
+  limit = 3,
+  minAttempts = 3,
+): WeakModuleEntry[] {
+  const byModule: Record<string, { correct: number; wrong: number }> = {}
+  for (const card of Object.values(state.cards)) {
+    const agg = byModule[card.moduleId] ?? { correct: 0, wrong: 0 }
+    agg.correct += card.totalCorrect
+    agg.wrong += card.totalWrong
+    byModule[card.moduleId] = agg
+  }
+  const entries: WeakModuleEntry[] = []
+  for (const [moduleId, agg] of Object.entries(byModule)) {
+    const totalAttempts = agg.correct + agg.wrong
+    if (totalAttempts < minAttempts) continue
+    entries.push({
+      moduleId,
+      totalCorrect: agg.correct,
+      totalWrong: agg.wrong,
+      totalAttempts,
+      accuracy: agg.correct / totalAttempts,
+    })
+  }
+  entries.sort((a, b) => {
+    if (a.accuracy !== b.accuracy) return a.accuracy - b.accuracy
+    return b.totalAttempts - a.totalAttempts
   })
-  return cards.slice(0, limit).map((c) => ({
-    conceptKey: c.conceptKey,
-    moduleId: c.moduleId,
-    box: c.box,
-    totalWrong: c.totalWrong,
-    totalCorrect: c.totalCorrect,
-  }))
+  return entries.slice(0, limit)
 }
 
 export type Trend = 'improving' | 'stable' | 'declining' | 'unknown'

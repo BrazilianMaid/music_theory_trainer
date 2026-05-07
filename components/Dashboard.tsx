@@ -1,16 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { QUIZ_MODES, describeConcept, type QuestionFilter } from '@/lib/quiz-engine'
+import { QUIZ_MODES, type QuestionFilter } from '@/lib/quiz-engine'
 import {
   loadState,
   moduleAccuracy,
   moduleTrend,
   overallStats,
-  weakConcepts,
+  weakModules,
   type AdaptiveState,
   type Trend,
-  type WeakConceptEntry,
+  type WeakModuleEntry,
 } from '@/lib/adaptive'
 import { ThemeToggle } from './ThemeToggle'
 
@@ -28,7 +28,8 @@ const MODULE_LABEL: Record<string, string> = Object.fromEntries(
   QUIZ_MODES.map((m) => [m.id, m.label]),
 )
 
-const WEAK_CONCEPT_LIMIT = 5
+const WEAK_TOPIC_LIMIT = 3
+const WEAK_TOPIC_MIN_ATTEMPTS = 3
 
 export default function Dashboard({ onStartQuiz }: DashboardProps) {
   // Hydrate from localStorage after mount so server/client output stays in sync.
@@ -43,7 +44,7 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
     ? '—'
     : `${Math.round(stats.accuracy * 100)}%`
 
-  const weak = weakConcepts(state, WEAK_CONCEPT_LIMIT)
+  const weak = weakModules(state, WEAK_TOPIC_LIMIT, WEAK_TOPIC_MIN_ATTEMPTS)
 
   return (
     <main className="min-h-screen bg-bg flex flex-col items-center px-4 py-10 relative">
@@ -94,22 +95,24 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
           </div>
         </section>
 
-        {/* Weakest concepts */}
+        {/* Weakest topics */}
         {weak.length > 0 && (
           <section className="bg-surface border border-border rounded-md p-5 mb-6 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <div className="text-[0.6rem] text-text-faint uppercase tracking-widest">
-                Weakest Concepts
+                Weakest Topics
               </div>
               <div className="text-[0.6rem] text-text-faint tracking-wide">
-                Box {weak[0].box}–{weak[weak.length - 1].box} · top {weak.length}
+                Where to focus
               </div>
             </div>
             <ul className="flex flex-col gap-2">
               {weak.map((w) => (
-                <WeakConceptRow
-                  key={w.conceptKey}
+                <WeakModuleRow
+                  key={w.moduleId}
                   entry={w}
+                  label={MODULE_LABEL[w.moduleId] ?? w.moduleId}
+                  trend={moduleTrend(state, w.moduleId)}
                   onPractice={() =>
                     onStartQuiz({ mode: w.moduleId, filter: { weakOnly: true } })
                   }
@@ -217,27 +220,29 @@ function ModuleCard({
   )
 }
 
-function WeakConceptRow({
+function WeakModuleRow({
   entry,
+  label,
+  trend,
   onPractice,
 }: {
-  entry: WeakConceptEntry
+  entry: WeakModuleEntry
+  label: string
+  trend: Trend
   onPractice: () => void
 }) {
-  const total = entry.totalCorrect + entry.totalWrong
-  const accuracy = total === 0 ? 0 : Math.round((entry.totalCorrect / total) * 100)
+  const pct = Math.round(entry.accuracy * 100)
   return (
     <li className="flex items-center justify-between gap-3 py-2 px-3 bg-surface-alt border border-border-light rounded">
       <div className="flex flex-col min-w-0">
-        <span className="text-[0.85rem] text-text-primary truncate">
-          {describeConcept(entry.conceptKey)}
-        </span>
-        <span className="text-[0.6rem] text-text-faint uppercase tracking-wide mt-[2px]">
-          {MODULE_LABEL[entry.moduleId] ?? entry.moduleId}
+        <div className="flex items-center gap-2">
+          <span className="text-[0.95rem] text-text-primary font-medium">{label}</span>
+          <TrendIndicator trend={trend} />
+        </div>
+        <span className="text-[0.65rem] text-text-faint tracking-wide mt-[2px]">
+          {pct}% accuracy
           <span className="mx-2 text-text-ghost">·</span>
-          Box {entry.box}
-          <span className="mx-2 text-text-ghost">·</span>
-          {total === 0 ? 'no attempts' : `${accuracy}% (${entry.totalCorrect}/${total})`}
+          {entry.totalCorrect}/{entry.totalAttempts} correct
         </span>
       </div>
       <button
