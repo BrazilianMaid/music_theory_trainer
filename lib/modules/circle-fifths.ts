@@ -35,7 +35,7 @@ function generate(): Question {
       : [
           `Go <strong>counter-clockwise one step</strong> from <strong>${fromKey}</strong>. What key?`,
           `What key is a <strong>perfect fifth below ${fromKey}</strong>?`,
-          `The <strong>IV chord of ${fromKey} major</strong> — what key does it belong to?`,
+          `What key shares its name with the <strong>IV chord of ${fromKey} major</strong>?`,
         ]
 
   const explanation =
