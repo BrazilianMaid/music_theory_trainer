@@ -22,7 +22,9 @@ export interface AdaptiveState {
   sessionHistory: SessionEntry[]
 }
 
-const STORAGE_KEY = 'mtt_adaptive_v1'
+const STORAGE_KEY_PREFIX = 'mtt_adaptive_v'
+const CURRENT_VERSION = 1
+const STORAGE_KEY = `${STORAGE_KEY_PREFIX}${CURRENT_VERSION}`
 const HISTORY_DAYS = 30
 
 export const BOX_INTERVALS_MS: Record<Box, number> = {
@@ -53,16 +55,54 @@ function trimHistory(history: SessionEntry[]): SessionEntry[] {
   })
 }
 
+function normalizeState(parsed: unknown): AdaptiveState | null {
+  if (!parsed || typeof parsed !== 'object') return null
+  const obj = parsed as Partial<AdaptiveState>
+  const cards = obj.cards && typeof obj.cards === 'object' ? obj.cards : {}
+  const history = Array.isArray(obj.sessionHistory) ? obj.sessionHistory : []
+  return { cards, sessionHistory: trimHistory(history) }
+}
+
+/**
+ * Migrate an older-version payload to the current shape. Called by
+ * loadState() when no current-version payload exists but a prior one does.
+ *
+ * When bumping CURRENT_VERSION:
+ *   1. Add a `case` branch returning the migrated AdaptiveState.
+ *   2. The migrator runs once on first load post-upgrade; the result is
+ *      saved under the new key, so subsequent loads skip migration.
+ *   3. Old keys are NOT cleaned up — keeps a backup if a user downgrades.
+ */
+function migrate(parsed: unknown, fromVersion: number): AdaptiveState | null {
+  switch (fromVersion) {
+    // No prior versions to migrate from yet.
+    default:
+      return null
+  }
+}
+
 export function loadState(): AdaptiveState {
   if (!isBrowser()) return emptyState()
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return emptyState()
-    const parsed = JSON.parse(raw) as AdaptiveState
-    if (!parsed || typeof parsed !== 'object') return emptyState()
-    const cards = parsed.cards && typeof parsed.cards === 'object' ? parsed.cards : {}
-    const history = Array.isArray(parsed.sessionHistory) ? parsed.sessionHistory : []
-    return { cards, sessionHistory: trimHistory(history) }
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      const normalized = normalizeState(parsed)
+      if (normalized) return normalized
+    }
+    // Look for older versions and migrate forward, newest-first so partial
+    // upgrades (v1 → v3) compose through the chain.
+    for (let v = CURRENT_VERSION - 1; v >= 1; v--) {
+      const oldRaw = window.localStorage.getItem(`${STORAGE_KEY_PREFIX}${v}`)
+      if (!oldRaw) continue
+      const oldParsed = JSON.parse(oldRaw)
+      const migrated = migrate(oldParsed, v)
+      if (migrated) {
+        saveState(migrated)
+        return migrated
+      }
+    }
+    return emptyState()
   } catch {
     return emptyState()
   }
