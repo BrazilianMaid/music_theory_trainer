@@ -86,6 +86,11 @@
   --guitar-bg: #e8f1e8;
   --guitar-border: #bcd9bc;
   --guitar-text: #2d6b2d;
+
+  /* Piano tip callout */
+  --piano-bg: #ece4f2;
+  --piano-border: #c4b3d4;
+  --piano-text: #5a3a7a;
 }
 
 .dark {
@@ -167,6 +172,10 @@
   --guitar-bg: #0e1a0e;
   --guitar-border: #2d612d;
   --guitar-text: #7bde8c;
+
+  --piano-bg: #1a142a;
+  --piano-border: #4a3a61;
+  --piano-text: #b39ade;
 }
 
 /* ── Base ──────────────────────────────────────────────────────────────── */
@@ -226,5 +235,20 @@ body {
 
 .guitar-tip::before {
   content: '🎸 Guitar: ';
+  font-weight: 500;
+}
+
+.piano-tip {
+  background: var(--piano-bg);
+  border-left: 2px solid var(--piano-border);
+  padding: 8px 12px;
+  border-radius: 0 3px 3px 0;
+  margin-top: 10px;
+  font-size: 0.73rem;
+  color: var(--piano-text);
+}
+
+.piano-tip::before {
+  content: '🎹 Piano: ';
   font-weight: 500;
 }

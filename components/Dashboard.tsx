@@ -13,6 +13,7 @@ import {
   type WeakConceptEntry,
 } from '@/lib/adaptive'
 import { ThemeToggle } from './ThemeToggle'
+import { InstrumentSelector } from './InstrumentSelector'
 
 interface QuizConfig {
   mode: string
@@ -47,7 +48,8 @@ export default function Dashboard({ onStartQuiz }: DashboardProps) {
 
   return (
     <main className="min-h-screen bg-bg flex flex-col items-center px-4 py-10 relative">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-3">
+        <InstrumentSelector />
         <ThemeToggle />
       </div>
 
